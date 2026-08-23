@@ -1,3 +1,3 @@
-# dotfiles
+# batch-scripts
 
-### Batch and Shell scripts.
+*Documentation is currently unavailable.*
