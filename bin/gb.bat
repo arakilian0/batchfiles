@@ -1,4 +1,5 @@
 @ECHO OFF
+
 SETLOCAL EnableExtensions EnableDelayedExpansion
 
 where git >nul 2>&1

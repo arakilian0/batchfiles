@@ -1,3 +1,2 @@
 @ECHO OFF
-
 git status
