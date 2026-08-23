@@ -100,7 +100,7 @@ IF ERRORLEVEL 1 (
 EXIT /B %ERRORLEVEL%
 
 :usage
-ECHO Usage: %~n0 [branch...] [-d^|-D] [-l] [-h]
+ECHO Usage: %~n0 [branch...] [-d or -D] [-l] [-h]
 ECHO   (no args)         List branches
 ECHO   branch            Create+switch, or switch if it exists
 ECHO   branch1 branch2   Same, for multiple branches in sequence
