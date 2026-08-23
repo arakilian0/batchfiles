@@ -7,6 +7,12 @@ IF ERRORLEVEL 1 (
     EXIT /B 1
 )
 
+git rev-parse --is-inside-work-tree >nul 2>&1
+IF ERRORLEVEL 1 (
+    ECHO Error: not inside a git repository.
+    EXIT /B 1
+)
+
 IF "%~1"=="" (
     git branch
     EXIT /B 0
@@ -49,26 +55,49 @@ IF NOT DEFINED TARGETS (
 )
 
 IF /I "%ACTION%"=="delete" (
-    FOR %%B IN (%TARGETS%) DO git branch -d "%%~B"
+    FOR %%B IN (%TARGETS%) DO (
+        IF NOT "%%~B"=="" (
+            git branch -d "%%~B"
+            IF ERRORLEVEL 1 (
+                ECHO Error: failed to delete branch "%%~B".
+                EXIT /B 1
+            )
+        )
+    )
     EXIT /B 0
 )
 IF /I "%ACTION%"=="force-delete" (
-    FOR %%B IN (%TARGETS%) DO git branch -D "%%~B"
+    FOR %%B IN (%TARGETS%) DO (
+        IF NOT "%%~B"=="" (
+            git branch -D "%%~B"
+            IF ERRORLEVEL 1 (
+                ECHO Error: failed to force-delete branch "%%~B".
+                EXIT /B 1
+            )
+        )
+    )
     EXIT /B 0
 )
 
 REM default: switch into each branch, creating it first if it doesn't exist
-FOR %%B IN (%TARGETS%) DO CALL :switch_or_create "%%~B"
+FOR %%B IN (%TARGETS%) DO (
+    CALL :switch_or_create "%%~B"
+    IF ERRORLEVEL 1 (
+        ECHO Error: failed to switch to branch "%%~B".
+        EXIT /B 1
+    )
+)
 EXIT /B 0
 
 :switch_or_create
+IF "%~1"=="" EXIT /B 0
 git show-ref --verify --quiet "refs/heads/%~1"
 IF ERRORLEVEL 1 (
     git checkout -b "%~1"
 ) ELSE (
     git checkout "%~1"
 )
-EXIT /B 0
+EXIT /B %ERRORLEVEL%
 
 :usage
 ECHO Usage: %~n0 [branch...] [-d^|-D] [-l] [-h]
