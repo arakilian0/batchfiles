@@ -55,29 +55,52 @@ IF NOT DEFINED TARGETS (
 )
 
 IF /I "%ACTION%"=="delete" (
-    FOR %%B IN (%TARGETS%) DO git branch -d "%%~B"
+    FOR %%B IN (%TARGETS%) DO (
+        IF NOT "%%~B"=="" (
+            git branch -d "%%~B"
+            IF ERRORLEVEL 1 (
+                ECHO Error: failed to delete branch "%%~B".
+                EXIT /B 1
+            )
+        )
+    )
     EXIT /B 0
 )
 IF /I "%ACTION%"=="force-delete" (
-    FOR %%B IN (%TARGETS%) DO git branch -D "%%~B"
+    FOR %%B IN (%TARGETS%) DO (
+        IF NOT "%%~B"=="" (
+            git branch -D "%%~B"
+            IF ERRORLEVEL 1 (
+                ECHO Error: failed to force-delete branch "%%~B".
+                EXIT /B 1
+            )
+        )
+    )
     EXIT /B 0
 )
 
 REM default: switch into each branch, creating it first if it doesn't exist
-FOR %%B IN (%TARGETS%) DO CALL :switch_or_create "%%~B"
+FOR %%B IN (%TARGETS%) DO (
+    CALL :switch_or_create "%%~B"
+    IF ERRORLEVEL 1 (
+        ECHO Error: failed to switch to branch "%%~B".
+        EXIT /B 1
+    )
+)
 EXIT /B 0
 
 :switch_or_create
+IF "%~1"=="" EXIT /B 0
 git show-ref --verify --quiet "refs/heads/%~1"
 IF ERRORLEVEL 1 (
     git checkout -b "%~1"
 ) ELSE (
     git checkout "%~1"
 )
-EXIT /B 0
+EXIT /B %ERRORLEVEL%
 
 :usage
-ECHO Usage: %~n0 [branch...] [-d^|-D] [-l] [-h]
+ECHO Usage: %~n0 [branch...] [-d or -D] [-l] [-h]
 ECHO   (no args)         List branches
 ECHO   branch            Create+switch, or switch if it exists
 ECHO   branch1 branch2   Same, for multiple branches in sequence
