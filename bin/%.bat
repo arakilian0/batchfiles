@@ -1,6 +1,6 @@
 @ECHO OFF
 
-set batch-scripts=C:\arakilian0\batch-scripts
+set batch-scripts=C:\arakilian0\batchfiles
 
 IF [%~1]==[] ( cd %batch-scripts% ) ELSE (
   IF "%1"=="-u" ( code %batch-scripts% )
