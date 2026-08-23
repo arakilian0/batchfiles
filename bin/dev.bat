@@ -1,3 +1,3 @@
 @ECHO OFF 
-call dotfiles-config
-cd %dir_dev%
+
+cd C:\arakilian0
