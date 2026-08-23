@@ -7,6 +7,12 @@ IF ERRORLEVEL 1 (
     EXIT /B 1
 )
 
+git rev-parse --is-inside-work-tree >nul 2>&1
+IF ERRORLEVEL 1 (
+    ECHO Error: not inside a git repository.
+    EXIT /B 1
+)
+
 IF "%~1"=="" (
     git branch
     EXIT /B 0
