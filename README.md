@@ -1,3 +1,3 @@
-# batch-scripts
+# batchfiles
 
 *Documentation is currently unavailable.*
