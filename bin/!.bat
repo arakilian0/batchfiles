@@ -1,24 +1,27 @@
 @ECHO OFF
 
-IF [%~1]==[] GOTO exit_code
+:: Callback handling
+IF /I "%~1"=="--internal-usage" GOTO usage
 
-IF "%~1"=="." GOTO script_code
-IF /I "%~1"=="-h" GOTO usage
-IF /I "%~1"=="--help" GOTO usage
+:: 1. Delegate common flags to common_flags.bat
+CALL "%~dp0lib\common.bat" "%~1" "%~f0"
+IF ERRORLEVEL 1 EXIT /B %ERRORLEVEL%
 
-ECHO Error: %1 is not an acceptable argument.
+:: 2. Handle script-specific flags / defaults
+IF [%~1]==[] GOTO default_action
+
+:: 3. Catch invalid arguments HERE (only after checking all valid options)
+ECHO %RED%Error:%RESET% %DIM%"%~1"%RESET% is not an acceptable argument.
 GOTO usage
 
-:script_code
-code "%~f0"
-EXIT /B 0
-
-:exit_code
-exit
+:default_action
+EXIT
 
 :usage
-ECHO Usage: %~n0 [.] [-h]
-ECHO   (no args)        Exit terminal
-ECHO   .                Open this script in VS Code
-ECHO   -h, --help       Show this help
-EXIT /B 0
+ECHO.
+ECHO Usage:%CYAN% %~n0 %RESET%%DIM%[.] [-h]%RESET%
+ECHO.
+ECHO   %DIM%(no args)%RESET%           Quit current session
+ECHO   %DIM%.%RESET%                   Open %~nx0 in VS Code
+ECHO   %DIM%-h, --help%RESET%          Show help
+EXIT /B 1
