@@ -6,6 +6,7 @@ CALL "%~dp0lib\common.bat" "%~1" "%~f0"
 IF ERRORLEVEL 1 EXIT /B %ERRORLEVEL%
 
 IF [%~1]==[] GOTO default_action
+
 IF /I "%~1"=="-f" GOTO exit_window
 IF /I "%~1"=="--force" GOTO exit_window
 

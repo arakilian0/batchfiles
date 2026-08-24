@@ -6,8 +6,10 @@ CALL "%~dp0lib\common.bat" "%~1" "%~f0"
 IF ERRORLEVEL 1 EXIT /B %ERRORLEVEL%
 
 IF [%~1]==[] GOTO default_action
+
 IF /I "%~1"=="-p" GOTO system_props
 IF /I "%~1"=="--props" GOTO system_props
+
 IF /I "%~1"=="-n" GOTO new_terminal
 IF /I "%~1"=="--new" GOTO new_terminal
 
