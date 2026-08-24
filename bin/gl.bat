@@ -12,4 +12,4 @@ IF ERRORLEVEL 1 (
     EXIT /B 1
 )
 
-git --no-pager log
+git --no-pager log --reverse
