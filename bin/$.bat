@@ -1,6 +1,7 @@
 @ECHO OFF
 
 IF [%~1]==[] GOTO start_terminal
+
 IF /I "%~1"=="-p" GOTO system_props
 IF /I "%~1"=="-h" GOTO usage
 IF /I "%~1"=="--help" GOTO usage
