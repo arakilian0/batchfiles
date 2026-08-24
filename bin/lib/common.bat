@@ -35,9 +35,4 @@ EXIT /B 0
 
 :show_help
 CALL "%~2" --internal-usage 2>nul
-IF ERRORLEVEL 1 (
-    ECHO Usage: %~n2 [.] [-h]
-    ECHO   .           Open script in VS Code
-    ECHO   -h, --help  Show help
-)
 EXIT /B 1
