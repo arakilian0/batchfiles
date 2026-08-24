@@ -1,11 +1,11 @@
 # batchfiles
 
-<!-- ## Bin
-Quick overview of all the scripts in `/bin`.
-If a script is longer than one line, a link is provided in *Snippet* instead. -->
+## Bin
+Quick overview of all utility scripts available in `/bin`. 
 
-<!-- | Command | Snippet | Notes |
-|------|---------|----------|
-| ! | `exit` | Quits terminal |
-| $ | [view code](./bin/$.bat) |  |
-| **Total** | **2 rows** |  | -->
+> **Global Flags:** Every script supports `.` (opens the script in VS Code) and `-h`, `--help` (displays documentation).
+
+| Command | Arguments | Description |
+| :--- | :--- | :--- |
+| `!` | `-f`, `--force` | Closes the active terminal session or all host instances. |
+| `$` | `-p`, `--props`<br>`-n`, `--new` | Spawns a new terminal tab/window or launches System Properties. |
