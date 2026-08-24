@@ -28,7 +28,7 @@ ECHO.
 ECHO Usage:%CYAN% %~n0 %RESET%%DIM%[.] [-p] [-h]%RESET%
 ECHO.
 ECHO   %DIM%(no args)%RESET%           Run default action
-ECHO   %DIM%.%RESET%                   Open script in VS Code
+ECHO   %DIM%.%RESET%                   Open %~nx0 in VS Code
 ECHO   %DIM%-p%RESET%                  Run custom task
 ECHO   %DIM%-h, --help%RESET%          Show help
 EXIT /B 1
