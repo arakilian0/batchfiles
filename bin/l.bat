@@ -36,11 +36,9 @@ IF DEFINED COMMAND (
     EXIT /B 0
 )
 
-:: 5. Default Action (No arguments passed)
-:: Loop through ALL items (files and folders)
-for /d %%d in (*) do echo Folder: %%d
-for %%f in (*) do if not exist "%%f\" echo File: %%f
-
+:: 5. Default action
+FOR /F "delims=" %%D IN ('DIR /B /A:D') DO ECHO %%D
+FOR /F "delims=" %%F IN ('DIR /B /A:-D') DO ECHO %%F
 EXIT /B 0
 
 :: 6. Helper Actions
