@@ -36,9 +36,30 @@ IF "%OPEN_IN_EDITOR%"=="1" GOTO edit_action
 IF "%CLOSE_ALL%"=="1" GOTO close_all_action
 IF "%CLOSE_TAB%"=="1" GOTO close_tab_action
 
-:: 4. Subcommands
+:: 4. Subcommands & Directory Navigation
 IF DEFINED COMMAND (
-    ECHO Error: !SCRIPT_NAME! [!COMMAND!] is not a command. See '!SCRIPT_NAME! --help'.
+    :: Directory navigation check
+    IF EXIST "!COMMAND!\" (
+        ENDLOCAL
+        PUSHD "%COMMAND%"
+        EXIT /B 0
+    )
+
+    :: Check if COMMAND is a positive integer
+    SET "IS_NUM=1"
+    FOR /F "delims=0123456789" %%N IN ("!COMMAND!") DO SET "IS_NUM=0"
+
+    :: 4a. Numeric logic: Navigate up N directories
+    IF "!IS_NUM!"=="1" (
+        (
+            ENDLOCAL
+            FOR /L %%A IN (1,1,%COMMAND%) DO CD ..
+        )
+        EXIT /B 0
+    ) ELSE (
+        ECHO Error: !SCRIPT_NAME! [!COMMAND!] is not a valid command or directory.
+        EXIT /B 1
+    )
     EXIT /B 0
 )
 

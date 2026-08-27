@@ -1,8 +1,14 @@
 @ECHO OFF
 CALL "%~dp0..\lib\colors.bat"
 
-ECHO Usage:%CYAN% %~1 %RESET%%GRAY%[-t ^| --tab] [-a ^| --all] [-e ^| --edit] [-h ^| --help]%RESET%
 ECHO.
+ECHO Usage:%CYAN% %~1 %RESET%%GRAY%^<target^>%RESET% %GRAY%[options]%RESET%
+ECHO.
+ECHO   %BOLD%^<TARGET^>%RESET%
+ECHO   %CYAN%^<directory^>%RESET%         Navigate to a folder by name or full path (%~1 src ^| %~1 C:\Projects)
+ECHO   %CYAN%^<number^>%RESET%            Navigate up N parent directories (%~1 2 ^= cd ../..)
+ECHO.
+ECHO   %BOLD%[OPTIONS]%RESET%
 ECHO   %GRAY%(no args)%RESET%           Clear screen
 ECHO   %GRAY%-t, --tab%RESET%           Close current terminal tab
 ECHO   %GRAY%-a, --all%RESET%           Close all running terminal sessions
