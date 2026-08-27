@@ -1,6 +1,8 @@
 @ECHO OFF
 SETLOCAL EnableDelayedExpansion
 
+CALL "%~dp0..\lib\colors.bat"
+
 :: 1. Lock script identity variables before SHIFT runs
 SET "SCRIPT_PATH=%~f0"
 SET "SCRIPT_NAME=%~n0"
@@ -57,7 +59,7 @@ IF DEFINED COMMAND (
         )
         EXIT /B 0
     ) ELSE (
-        ECHO Error: !SCRIPT_NAME! [!COMMAND!] is not a valid command or directory.
+        ECHO %RED%Error:%RESET% !SCRIPT_NAME! [!COMMAND!] is not a valid command or directory.
         EXIT /B 1
     )
     EXIT /B 0
