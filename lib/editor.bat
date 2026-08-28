@@ -3,9 +3,9 @@
 WHERE code >nul 2>nul
 IF %ERRORLEVEL% NEQ 0 GOTO fallback
 
-code "%SCRIPT_PATH%"
+code "%~1"
 EXIT /B 0
 
 :fallback
-notepad "%SCRIPT_PATH%"
+notepad "%~1"
 EXIT /B 0
