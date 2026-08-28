@@ -43,7 +43,7 @@ IF DEFINED COMMAND (
 
 :: 5. Default action
 FOR /F "delims=" %%D IN ('DIR /B /A:D-H 2^>nul') DO ECHO %CYAN%%%D%RESET%
-FOR /F "delims=" %%F IN ('DIR /B /A:-D-H 2^>nul') DO ECHO %GRAY%%%F%RESET%
+FOR /F "delims=" %%F IN ('DIR /B /A:-D-H 2^>nul') DO ECHO %GREEN%%%F%RESET%
 EXIT /B 0
 
 :: 6. Helper Actions
@@ -55,5 +55,5 @@ CALL "%SCRIPT_DIR%..\lib\editor.bat" "%SCRIPT_PATH%" & ENDLOCAL & EXIT /B 0
 
 :list_all_action
 FOR /F "delims=" %%D IN ('DIR /B /A:D 2^>nul') DO ECHO %CYAN%%%D%RESET%
-FOR /F "delims=" %%F IN ('DIR /B /A:-D 2^>nul') DO ECHO %GRAY%%%F%RESET%
+FOR /F "delims=" %%F IN ('DIR /B /A:-D 2^>nul') DO ECHO %GREEN%%%F%RESET%
 ENDLOCAL & EXIT /B 0
