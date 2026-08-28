@@ -79,4 +79,4 @@ CALL "%SCRIPT_DIR%..\lib\editor.bat" "%SCRIPT_PATH%" & ENDLOCAL & EXIT /B 0
 ENDLOCAL & EXIT
 
 :close_all_action
-ENDLOCAL & TASKKILL /F /IM cmd.exe >NUL 2>&1 & EXIT
+ENDLOCAL & taskkill /F /IM WindowsTerminal.exe /IM wt.exe /T >NUL 2>&1 & EXIT
