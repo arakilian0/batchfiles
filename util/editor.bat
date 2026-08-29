@@ -1,12 +1,14 @@
 @ECHO OFF
 
+CALL "%~dp0config.bat" "editor"
+
 :: Check if code exists in PATH
-WHERE code >nul 2>nul
+WHERE %editor1% >nul 2>nul
 :: If not go to fallback
 IF %ERRORLEVEL% NEQ 0 GOTO fallback
 
 :: Open argument 1 in vscode
-code "%~1"
+%editor1% "%~1"
 EXIT /B 0
 
 :fallback
@@ -16,6 +18,6 @@ IF "%~2" == "full" (
     EXIT /B 0
 )
 
-notepad "%~1"
+%editor2% "%~1"
 EXIT /B 0
 
