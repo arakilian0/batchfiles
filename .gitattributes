@@ -1,0 +1,15 @@
+# .gitattributes for windk
+
+# All text files normalized to CRLF on checkout
+* text eol=crlf
+
+# Exceptions
+*.md  text eol=lf
+
+# Exclude from release archives (git archive / GitHub "Download ZIP" / release tarballs)
+.docs/           export-ignore
+.github/         export-ignore
+.notes/          export-ignore
+.vscode/         export-ignore
+.editorconfig    export-ignore
+.README.md       export-ignore
