@@ -1,13 +1,11 @@
 @ECHO OFF
 
+:: Check if code exists in PATH
 WHERE code >nul 2>nul
+:: If not go to fallback
 IF %ERRORLEVEL% NEQ 0 GOTO fallback
 
-IF "%~2" == "full" (
-    code "%~1"
-    EXIT /B 0
-) 
-
+:: Open argument 1 in vscode
 code "%~1"
 EXIT /B 0
 
