@@ -1,0 +1,22 @@
+COMMON OPTIONS:
+    - HELP (x)
+    - EDIT (x)
+    - VERBOSE
+    - VERSION
+    - UPDATE
+
+MODULARIZE COMMONS:
+    - util/
+    - help/
+    - cfg/
+
+TESTING:
+    - Github Actions
+
+CORE (aka /lib):
+    - windk publish
+    - windk update
+    - windk install
+
+ERROR HANDLING:
+    - ERRORLEVEL
