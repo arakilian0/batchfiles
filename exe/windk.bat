@@ -1,8 +1,8 @@
 @ECHO OFF
 SETLOCAL EnableDelayedExpansion
 
-CALL "%~dp0..\util\config.bat" "windk"
-CALL "%~dp0..\util\colors.bat"
+CALL "%~dp0..\util\config.bat" "package"
+CALL "%~dp0..\util\color.bat"
 
 :: 1. Lock script identity variables (resolves alias if RUN_AS is set)
 SET "SCRIPT_PATH=%~f0"
@@ -58,20 +58,20 @@ IF "%OPEN_WINDK_IN_EDITOR%"=="1" GOTO open_windk_action
 
 :: 4. Subcommands & Directory Navigation
 IF DEFINED COMMAND (
-    IF EXIST "%~dp0src\!COMMAND!.bat" (
+    IF EXIST "%~dp0exe\!COMMAND!.bat" (
         ECHO !COMMAND! already exists.
         ENDLOCAL
         EXIT /B !ERRORLEVEL!
-    ) 
-    
+    )
+
     IF "!COMMAND!"=="update" (
         ECHO Running built-in command: update
         ENDLOCAL
         EXIT /B 0
     )
-    
+
     :: If neither condition matched:
-    ECHO Create "%~dp0src\!COMMAND!.bat" and "%~dp0lib\help\!COMMAND!.bat"
+    ECHO Create "%~dp0exe\!COMMAND!.bat" and "%~dp0help\!COMMAND!.bat"
     ENDLOCAL
     EXIT /B 1
 )
@@ -83,12 +83,12 @@ EXIT /B 0
 
 :: 6. Helper Actions
 :help_action
-CALL "%SCRIPT_DIR%..\lib\help\windk-help.bat" "%SCRIPT_NAME%" "%SCRIPT_FILE%"
+CALL "%SCRIPT_DIR%..\help\windk-help.bat" "%SCRIPT_NAME%" "%SCRIPT_FILE%"
 ENDLOCAL
 EXIT /B 0
 
 :edit_action
-CALL "%SCRIPT_DIR%..\lib\editor.bat" "%SCRIPT_PATH%"
+CALL "%SCRIPT_DIR%..\util\editor.bat" "%SCRIPT_PATH%"
 ENDLOCAL
 EXIT /B 0
 
@@ -98,17 +98,11 @@ ENDLOCAL
 EXIT /B 0
 
 :scripts_action
-IF EXIST "%SCRIPT_DIR%" (
-    FOR /F "tokens=*" %%F IN ('DIR /B /A-D "%SCRIPT_DIR%\*.bat" 2^>NUL') DO (
-        ECHO %GREEN%  %%~nxF%RESET%
-    )
-) ELSE (
-    ECHO %RED%Error: Source directory not found at "%SCRIPT_DIR%"%RESET%
-)
+CALL "%SCRIPT_DIR%..\lib\windk\list_scripts.bat"
 ENDLOCAL
 EXIT /B 0
 
 :open_windk_action
-CALL "%SCRIPT_DIR%..\lib\editor.bat" "%SCRIPT_DIR%.." "full"
+CALL "%SCRIPT_DIR%..\util\editor.bat" "%SCRIPT_DIR%.." "full"
 ENDLOCAL
 EXIT /B 0
