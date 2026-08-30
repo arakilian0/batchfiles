@@ -60,36 +60,7 @@ IF "%OPEN_WINDK_IN_EDITOR%"=="1" CALL "%SCRIPT_DIR%..\lib\windk\flags.bat" :open
 
 :: 4. Subcommands & Directory Navigation
 IF DEFINED COMMAND (
-    IF "!COMMAND!"=="install" (
-        IF NOT DEFINED SUBCOMMAND_ARGS (
-            ECHO Arguments are null or empty.
-        ) ELSE (
-            ECHO Arguments exist: !SUBCOMMAND_ARGS!
-        )
-        ENDLOCAL
-        EXIT /B 0
-    )
-    IF "!COMMAND!"=="install" (
-        IF NOT DEFINED SUBCOMMAND_ARGS (
-            ECHO Arguments are null or empty.
-        ) ELSE (
-            ECHO Arguments exist: !SUBCOMMAND_ARGS!
-        )
-        ENDLOCAL
-        EXIT /B 0
-    )
-
-    IF "!COMMAND!"=="update" (
-        ECHO Running built-in command: update
-        ENDLOCAL
-        EXIT /B 0
-    )
-
-    IF "!COMMAND!"=="create" (
-        ECHO Running built-in command: update
-        ENDLOCAL
-        EXIT /B 0
-    )
+    IF "!COMMAND!"=="install" CALL "%SCRIPT_DIR%..\lib\windk\install.bat" & EXIT /B 0
 
     :: If neither condition matched:
     ECHO %ERROR_1%
