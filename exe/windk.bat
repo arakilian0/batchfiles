@@ -23,6 +23,8 @@ SET "OPEN_WINDK_IN_EDITOR=0"
 SET "COMMAND="
 SET "SUBCOMMAND_ARGS="
 
+SET "ERROR_1=Run %YELLOW%!SCRIPT_NAME! --help%RESET% for available commands."
+
 :: 2. Argument Parsing Loop
 :parse_args
 IF "%~1"=="" GOTO process_args
@@ -50,18 +52,31 @@ SHIFT & GOTO parse_args
 
 :: 3. Action Handler
 :process_args
-IF "%SHOW_HELP%"=="1" GOTO help_action
-IF "%OPEN_IN_EDITOR%"=="1" GOTO edit_action
-IF "%SHOW_VERSION%"=="1" GOTO version_action
-IF "%SHOW_SCRIPTS%"=="1" GOTO scripts_action
-IF "%OPEN_WINDK_IN_EDITOR%"=="1" GOTO open_windk_action
+IF "%SHOW_HELP%"=="1" CALL "%SCRIPT_DIR%..\lib\windk\flags.bat" :help_action & EXIT /B 0
+IF "%OPEN_IN_EDITOR%"=="1" CALL "%SCRIPT_DIR%..\lib\windk\flags.bat" :edit_action & EXIT /B 0
+IF "%SHOW_VERSION%"=="1" CALL "%SCRIPT_DIR%..\lib\windk\flags.bat" :version_action & EXIT /B 0
+IF "%SHOW_SCRIPTS%"=="1" CALL "%SCRIPT_DIR%..\lib\windk\flags.bat" :scripts_action & EXIT /B 0
+IF "%OPEN_WINDK_IN_EDITOR%"=="1" CALL "%SCRIPT_DIR%..\lib\windk\flags.bat" :open_windk_action & EXIT /B 0
 
 :: 4. Subcommands & Directory Navigation
 IF DEFINED COMMAND (
-    IF EXIST "%~dp0exe\!COMMAND!.bat" (
-        ECHO !COMMAND! already exists.
+    IF "!COMMAND!"=="install" (
+        IF NOT DEFINED SUBCOMMAND_ARGS (
+            ECHO Arguments are null or empty.
+        ) ELSE (
+            ECHO Arguments exist: !SUBCOMMAND_ARGS!
+        )
         ENDLOCAL
-        EXIT /B !ERRORLEVEL!
+        EXIT /B 0
+    )
+    IF "!COMMAND!"=="install" (
+        IF NOT DEFINED SUBCOMMAND_ARGS (
+            ECHO Arguments are null or empty.
+        ) ELSE (
+            ECHO Arguments exist: !SUBCOMMAND_ARGS!
+        )
+        ENDLOCAL
+        EXIT /B 0
     )
 
     IF "!COMMAND!"=="update" (
@@ -70,39 +85,19 @@ IF DEFINED COMMAND (
         EXIT /B 0
     )
 
+    IF "!COMMAND!"=="create" (
+        ECHO Running built-in command: update
+        ENDLOCAL
+        EXIT /B 0
+    )
+
     :: If neither condition matched:
-    ECHO Create "%~dp0exe\!COMMAND!.bat" and "%~dp0help\!COMMAND!.bat"
+    ECHO %ERROR_1%
     ENDLOCAL
     EXIT /B 1
 )
 
 :: 5. Default Action (No arguments passed)
-ECHO Run %YELLOW%!SCRIPT_NAME! --help%RESET% for available commands.
-ENDLOCAL
-EXIT /B 0
-
-:: 6. Helper Actions
-:help_action
-CALL "%SCRIPT_DIR%..\help\windk-help.bat" "%SCRIPT_NAME%" "%SCRIPT_FILE%"
-ENDLOCAL
-EXIT /B 0
-
-:edit_action
-CALL "%SCRIPT_DIR%..\util\editor.bat" "%SCRIPT_PATH%"
-ENDLOCAL
-EXIT /B 0
-
-:version_action
-ECHO %NAME% version %VERSION%
-ENDLOCAL
-EXIT /B 0
-
-:scripts_action
-CALL "%SCRIPT_DIR%..\lib\windk\list_scripts.bat"
-ENDLOCAL
-EXIT /B 0
-
-:open_windk_action
-CALL "%SCRIPT_DIR%..\util\editor.bat" "%SCRIPT_DIR%.." "full"
+ECHO %ERROR_1%
 ENDLOCAL
 EXIT /B 0
