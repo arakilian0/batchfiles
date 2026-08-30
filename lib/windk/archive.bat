@@ -20,9 +20,9 @@ IF EXIST "%~dp0..\..\exe\!SUBCOMMAND_ARGS!.bat" (
 choice /C YN /M "Are you sure you want %~n0 !SUBCOMMAND_ARGS!?"
 
 IF %ERRORLEVEL% EQU 1 (
-    move /-Y "%~dp0..\..\exe\!SUBCOMMAND_ARGS!.bat" "%~dp0..\..\.archive\!SUBCOMMAND_ARGS!.bat"
+    move /-Y "%~dp0..\..\exe\!SUBCOMMAND_ARGS!.bat" "%~dp0..\..\.archive\!SUBCOMMAND_ARGS!.bat" >nul
     IF EXIST "%~dp0..\..\help\!SUBCOMMAND_ARGS!-help.bat" (
-        move /-Y "%~dp0..\..\help\!SUBCOMMAND_ARGS!-help.bat" "%~dp0..\..\.archive\help\!SUBCOMMAND_ARGS!-help.bat"
+        move /-Y "%~dp0..\..\help\!SUBCOMMAND_ARGS!-help.bat" "%~dp0..\..\.archive\help\!SUBCOMMAND_ARGS!-help.bat" >nul
     )
     GOTO end
 ) ELSE IF %ERRORLEVEL% EQU 2 (
