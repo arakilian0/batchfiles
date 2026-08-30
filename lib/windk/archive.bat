@@ -3,11 +3,7 @@ SETLOCAL EnableDelayedExpansion
 
 CALL "%~dp0..\..\util\color.bat"
 
-:: 1. Check if the delayed variable is empty
-IF "!SUBCOMMAND_ARGS!"=="" (
-    ECHO %RED%Error:%RESET% please provide the name of the script to %~n0.
-    GOTO end
-)
+IF "!SUBCOMMAND_ARGS!"=="" GOTO list_archived
 
 IF EXIST "%~dp0..\..\exe\!SUBCOMMAND_ARGS!.bat" (
     GOTO prompt_action
@@ -15,6 +11,25 @@ IF EXIST "%~dp0..\..\exe\!SUBCOMMAND_ARGS!.bat" (
     ECHO %RED%Error:%RESET% "windk\exe\!SUBCOMMAND_ARGS!.bat" does not exist.
     GOTO end
 )
+
+:list_archived
+ECHO List of archived scripts:
+
+:: Check if any .bat files exist first to avoid showing a blank line
+IF EXIST "%~dp0..\..\.archive\*.bat" (
+    FOR /F "delims=" %%A IN ('dir /B "%~dp0..\..\.archive\*.bat" 2^>nul') DO (
+        ECHO %CYAN%  - %%A%RESET%
+    )
+    IF EXIST "%~dp0..\..\.archive\help\*.bat" (
+        FOR /F "delims=" %%A IN ('dir /B "%~dp0..\..\.archive\help\*.bat" 2^>nul') DO (
+            ECHO %magenta%  - %%A%RESET%
+        )
+    )
+) ELSE (
+    ECHO %YELLOW%No archived scripts found.%RESET%
+)
+
+GOTO end
 
 :prompt_action
 choice /C YN /M "Are you sure you want %~n0 !SUBCOMMAND_ARGS!?"
@@ -24,6 +39,7 @@ IF %ERRORLEVEL% EQU 1 (
     IF EXIST "%~dp0..\..\help\!SUBCOMMAND_ARGS!-help.bat" (
         move /-Y "%~dp0..\..\help\!SUBCOMMAND_ARGS!-help.bat" "%~dp0..\..\.archive\help\!SUBCOMMAND_ARGS!-help.bat" >nul
     )
+    ECHO Successfully archived !SUBCOMMAND_ARGS!.
     GOTO end
 ) ELSE IF %ERRORLEVEL% EQU 2 (
     ECHO Deletion aborted. No changes were made.
