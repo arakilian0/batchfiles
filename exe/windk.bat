@@ -61,6 +61,7 @@ IF "%OPEN_WINDK_IN_EDITOR%"=="1" CALL "%SCRIPT_DIR%..\lib\windk\flags.bat" :open
 :: 4. Subcommands & Directory Navigation
 IF DEFINED COMMAND (
     IF "!COMMAND!"=="install" CALL "%SCRIPT_DIR%..\lib\windk\install.bat" & EXIT /B 0
+    IF "!COMMAND!"=="create" CALL "%SCRIPT_DIR%..\lib\windk\create.bat" & EXIT /B 0
 
     :: If neither condition matched:
     ECHO %ERROR_1%
