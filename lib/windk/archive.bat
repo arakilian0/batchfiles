@@ -39,7 +39,10 @@ IF %ERRORLEVEL% EQU 1 (
     IF EXIST "%~dp0..\..\help\!SUBCOMMAND_ARGS!-help.bat" (
         move /-Y "%~dp0..\..\help\!SUBCOMMAND_ARGS!-help.bat" "%~dp0..\..\.archive\help\!SUBCOMMAND_ARGS!-help.bat" >nul
     )
-    ECHO Successfully archived !SUBCOMMAND_ARGS!.
+    IF EXIST "%~dp0..\..\lib\!SUBCOMMAND_ARGS!" (
+        move /-Y "%~dp0..\..\lib\!SUBCOMMAND_ARGS!" "%~dp0..\..\.archive\lib\!SUBCOMMAND_ARGS!" >nul
+    )
+    ECHO Successfully %~n0d !SUBCOMMAND_ARGS!.
     GOTO end
 ) ELSE IF %ERRORLEVEL% EQU 2 (
     ECHO Deletion aborted. No changes were made.
