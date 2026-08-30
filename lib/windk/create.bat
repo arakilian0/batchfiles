@@ -1,9 +1,11 @@
 @ECHO OFF
 SETLOCAL EnableDelayedExpansion
 
+CALL "%~dp0..\..\util\color.bat"
+
 :: 1. Check if the delayed variable is empty
 IF "!SUBCOMMAND_ARGS!"=="" (
-    ECHO Error: please provide a name for your new command.
+    ECHO %RED%Error:%RESET% please provide the name of the script to %~n0.
     GOTO end
 )
 
