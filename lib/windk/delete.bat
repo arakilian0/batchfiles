@@ -5,7 +5,7 @@ CALL "%~dp0..\..\util\color.bat"
 
 :: 1. Check if the delayed variable is empty
 IF "!SUBCOMMAND_ARGS!"=="" (
-    ECHO %RED%Error:%RESET% please provide the name of the script to delete.
+    ECHO %RED%Error:%RESET% please provide the name of the script to %~n0.
     GOTO end
 )
 
@@ -18,7 +18,7 @@ IF EXIST "%~dp0..\..\exe\!SUBCOMMAND_ARGS!.bat" (
 )
 
 :prompt_action
-choice /C YN /M "Are you sure you want delete !SUBCOMMAND_ARGS!?"
+choice /C YN /M "Are you sure you want %~n0 !SUBCOMMAND_ARGS!?"
 
 IF %ERRORLEVEL% EQU 1 (
     del "%~dp0..\..\exe\!SUBCOMMAND_ARGS!.bat"
