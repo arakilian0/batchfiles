@@ -61,6 +61,7 @@ IF "%OPEN_WINDK_IN_EDITOR%"=="1" CALL "%SCRIPT_DIR%..\lib\windk\flags.bat" :open
 :: 4. Subcommands & Directory Navigation
 IF DEFINED COMMAND (
     IF "!COMMAND!"=="archive" CALL "%SCRIPT_DIR%..\lib\windk\archive.bat" & EXIT /B 0
+    IF "!COMMAND!"=="unarchive" CALL "%SCRIPT_DIR%..\lib\windk\unarchive.bat" & EXIT /B 0
     IF "!COMMAND!"=="delete" CALL "%SCRIPT_DIR%..\lib\windk\delete.bat" & EXIT /B 0
     IF "!COMMAND!"=="create" CALL "%SCRIPT_DIR%..\lib\windk\create.bat" & EXIT /B 0
 
