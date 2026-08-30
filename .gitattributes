@@ -7,9 +7,13 @@
 *.md  text eol=lf
 
 # Exclude from release archives (git archive / GitHub "Download ZIP" / release tarballs)
-.docs/           export-ignore
-.github/         export-ignore
-.notes/          export-ignore
-.vscode/         export-ignore
-.editorconfig    export-ignore
-.README.md       export-ignore
+.docs/                     export-ignore
+.github/                   export-ignore
+.notes/                    export-ignore
+.vscode/                   export-ignore
+.editorconfig              export-ignore
+README.md                  export-ignore
+SECURITY.md                export-ignore
+CONTRIBUTING.md            export-ignore
+CHANGELOG.md               export-ignore
+CODE_OF_CONDUCT.md         export-ignore
