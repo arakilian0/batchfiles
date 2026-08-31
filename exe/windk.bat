@@ -52,18 +52,21 @@ SHIFT & GOTO parse_args
 
 :: 3. Action Handler
 :process_args
-IF "%SHOW_HELP%"=="1" CALL "%SCRIPT_DIR%..\lib\windk\flags.bat" :help_action & EXIT /B 0
-IF "%OPEN_IN_EDITOR%"=="1" CALL "%SCRIPT_DIR%..\lib\windk\flags.bat" :edit_action & EXIT /B 0
-IF "%SHOW_VERSION%"=="1" CALL "%SCRIPT_DIR%..\lib\windk\flags.bat" :version_action & EXIT /B 0
-IF "%SHOW_SCRIPTS%"=="1" CALL "%SCRIPT_DIR%..\lib\windk\flags.bat" :scripts_action & EXIT /B 0
-IF "%OPEN_WINDK_IN_EDITOR%"=="1" CALL "%SCRIPT_DIR%..\lib\windk\flags.bat" :open_windk_action & EXIT /B 0
+SET "DK_FLAG=%SCRIPT_DIR%..\lib\windk\flags.bat"
+SET "DK_COMMAND=%SCRIPT_DIR%..\lib\windk\commands.bat"
+
+IF "%SHOW_HELP%"=="1" CALL "%DK_FLAG%" :help_action & EXIT /B 0
+IF "%OPEN_IN_EDITOR%"=="1" CALL "%DK_FLAG%" :edit_action & EXIT /B 0
+IF "%SHOW_VERSION%"=="1" CALL "%DK_FLAG%" :version_action & EXIT /B 0
+IF "%SHOW_SCRIPTS%"=="1" CALL "%DK_FLAG%" :scripts_action & EXIT /B 0
+IF "%OPEN_WINDK_IN_EDITOR%"=="1" CALL "%DK_FLAG%" :open_windk_action & EXIT /B 0
 
 :: 4. Subcommands & Directory Navigation
 IF DEFINED COMMAND (
-    IF "!COMMAND!"=="archive" CALL "%SCRIPT_DIR%..\lib\windk\archive.bat" & EXIT /B 0
-    IF "!COMMAND!"=="unarchive" CALL "%SCRIPT_DIR%..\lib\windk\unarchive.bat" & EXIT /B 0
-    IF "!COMMAND!"=="delete" CALL "%SCRIPT_DIR%..\lib\windk\delete.bat" & EXIT /B 0
-    IF "!COMMAND!"=="create" CALL "%SCRIPT_DIR%..\lib\windk\create.bat" & EXIT /B 0
+    IF "!COMMAND!"=="archive" CALL "%DK_COMMAND%" :archive_action & EXIT /B 0
+    IF "!COMMAND!"=="unarchive" CALL "%DK_COMMAND%" :unarchive_action & EXIT /B 0
+    IF "!COMMAND!"=="delete" CALL "%DK_COMMAND%" :delete_action & EXIT /B 0
+    IF "!COMMAND!"=="create" CALL "%DK_COMMAND%" :create_action & EXIT /B 0
 
     :: If neither condition matched:
     ECHO %ERROR_1%
