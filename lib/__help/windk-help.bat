@@ -1,5 +1,6 @@
 @ECHO OFF
-CALL "%~dp0..\util\color.bat"
+
+CALL "%~dp0..\__utility\color.bat"
 
 ECHO.
 ECHO Usage:%CYAN% %~1 %RESET%%GRAY%^<target^>%RESET% %GRAY%[options]%RESET%
