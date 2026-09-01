@@ -1,6 +1,6 @@
-# Windk CLI
+# Windk
 
-A Just-In-Time (JIT) Dynamic Configuration Resolution Engine for high-reliability execution within the Microsoft Windows Command Shell (`cmd.exe`).
+Windk is a Windows Development kit. A lightweight, memory-efficient, and modular CLI runner architecture built for Windows Batch (cmd.exe).
 
 ## Overview
 
