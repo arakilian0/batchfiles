@@ -1,3 +1,5 @@
+> **Note:** This project is currently under active development and has not yet reached its first official release.
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -15,4 +17,3 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Development-stage bugs and edge cases
 
-> **Note:** This project is currently under active development and has not yet reached its first official release.
