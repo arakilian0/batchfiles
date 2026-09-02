@@ -1,8 +1,8 @@
 @echo off
 :: ============================================================================
-:: Module: config_manager.bat
-:: Usage GET: call config_manager.bat GET "windk.cfg" "section" "key" "RET_VAR"
-:: Usage SET: call config_manager.bat SET "windk.cfg" "section" "key" "value"
+:: Module: config.bat
+:: Usage GET: call config.bat GET "windk.cfg" "section" "key" "RET_VAR"
+:: Usage SET: call config.bat SET "windk.cfg" "section" "key" "value"
 :: ============================================================================
 
 set "ACTION=%~1"
