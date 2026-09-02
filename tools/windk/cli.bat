@@ -2,16 +2,23 @@
 setlocal EnableDelayedExpansion
 
 :: Define utility and config paths
-set "CONFIG_MGR=%~dp0..\..\core\config_manager.bat"
-set "CONFIG_FILE=%~dp0.cfg"
+set "COLOR_MGR=%~dp0..\..\core\colors.bat"
+set "CONFIG_MGR=%~dp0..\..\core\config.bat"
+set "CONFIG_FILE=%~dp0.cfsg"
+
+if not exist "%COLOR_MGR%" (
+    echo [ERROR] Core colors.bat file missing at: "%COLOR_MGR%"
+    exit /b 1
+)
+call "%COLOR_MGR%"
 
 if not exist "%CONFIG_MGR%" (
-    echo [ERROR] Config manager missing at: "%CONFIG_MGR%"
+    echo %RED%[ERROR]%RESET% Config manager missing at: "%CONFIG_MGR%"
     exit /b 1
 )
 
 if not exist "%CONFIG_FILE%" (
-    echo [ERROR] Configuration file missing at: "%CONFIG_FILE%"
+    echo %RED%[ERROR]%RESET% Configuration file missing at: "%CONFIG_FILE%"
     exit /b 1
 )
 
