@@ -1,2 +1,2 @@
 @echo off
-call "%~dp0..\tools\c_nav\main.bat" %*
+call "%~dp0..\tools\windk\cli.bat" %*
