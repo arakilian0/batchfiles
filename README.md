@@ -6,22 +6,27 @@ Windk is a Windows Development kit. A lightweight, memory-efficient, and modular
 
 Traditional Batch-based orchestration tools typically pre-parse or bulk-load configuration files (`.cfg`/`.ini`) into environment memory upon startup. In complex enterprise CLI environments, this quickly exceeds the native **32 KB Command Shell Environment Block limit**, causing buffer overflows, environment pollution, and unstable parameter evaluation.
 
-Windk resolves these platform constraints by strictly decoupling execution orchestration into three modular components, resolving configuration values on demand rather than loading them all into memory up front.
+Windk resolves these platform constraints by strictly decoupling execution orchestration into a composable set of modular components, resolving configuration values on demand rather than loading them all into memory up front.
 
 ## Architecture
 
-Windk is composed of three decoupled components:
+### 1. Entry Proxy Layer (`bin/`)
+Thin, stateless invocation shims exposed on PATH. Each script performs a single unconditional forward of the full argument vector to the router — it sets no variables, performs no branching, and invokes no process other than the router itself.
+```bat
+@echo off
+call "%~dp0..\tools\windk\cli.bat" %*
+```
 
-### 1. Stateless Router (`windk.bat`)
+### 2. Stateless Router (`tools/windk/cli.bat`)
 A lightweight parameter categorization and dispatch gateway. It maintains zero internal state tables and forwards parameter scope directly to target subcommands.
 
-### 2. Atomic Utility Engine (`config_manager.bat`)
+### 3. Atomic Utility Engine (`core/config_manager.bat`)
 Encapsulates configuration I/O into isolated, stateless execution contexts. It performs:
 - Line-buffered JIT key resolution (`GET`)
 - Non-destructive atomic mutations (`SET`)
 
-### 3. Autonomous Subcommands
-Independent executables hosted under `..\lib\` that own their respective domain business logic and local argument parsing.
+### 4. Autonomous Subcommands
+Independent executables hosted under `tools/toolname` that own their respective domain business logic and local argument parsing.
 
 ## Request Lifecycle
 
