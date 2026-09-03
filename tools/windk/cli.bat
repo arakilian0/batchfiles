@@ -2,11 +2,13 @@
 setlocal EnableDelayedExpansion
 
 :: Define utility and config paths
-set "COLOR_MGR=%~dp0..\..\core\colors.bat"
-set "CONFIG_MGR=%~dp0..\..\core\config.bat"
+set "COLOR_MGR=%~dp0..\..\core\ansi_codes.bat"
+set "CONFIG_MGR=%~dp0..\..\core\config_manager.bat"
 set "CONFIG_FILE=%~dp0.cfg"
 
-ECHO %COLOR_MGR%
+:: Canonicalize paths relative to the current script directory (%~dp0)
+call "%~dp0..\..\core\path_resolver.bat" resolve "%~dp0..\..\core\config_manager.bat" CONFIG_MGR
+call "%~dp0..\..\core\path_resolver.bat" resolve "%~dp0..\..\tools\windk\.cfg" CONFIG_FILE
 
 if not exist "%COLOR_MGR%" (
     echo [ERROR] Core colors.bat file missing at: "%COLOR_MGR%"
