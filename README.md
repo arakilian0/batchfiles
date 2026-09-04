@@ -1,146 +1,76 @@
-# Windk
+> ⚠️ **Development Status: Rapidly Evolving (v0.1.0)**  
+> `windk` is under active development. Syntax, directory structures, and core utility behavior are undergoing rapid iteration and may change between commits. Comprehensive documentation is currently **not a primary priority** while core features, internal dispatching, and framework utilities are actively being built and refined.
 
-Windk is a Windows Development kit. A lightweight, memory-efficient, and modular CLI runner architecture built for Windows Batch (cmd.exe).
+# windk — Windows Development Kit
 
-## Overview
+**windk** is a lightweight, modular CLI framework written entirely in native Windows Command Scripting (`.bat`). It brings modern command-line architecture—such as isolated executable proxies, externalized INI configurations, subcommand routing, explicit alias redirects (`@:` syntax), path normalization, and VT100 ANSI terminal formatting—to Windows without requiring external runtimes like Node.js, Python, or PowerShell execution policy overrides.
 
-Traditional Batch-based orchestration tools typically pre-parse or bulk-load configuration files (`.cfg`/`.ini`) into environment memory upon startup. In complex enterprise CLI environments, this quickly exceeds the native **32 KB Command Shell Environment Block limit**, causing buffer overflows, environment pollution, and unstable parameter evaluation.
+---
 
-Windk resolves these platform constraints by strictly decoupling execution orchestration into a composable set of modular components, resolving configuration values on demand rather than loading them all into memory up front.
+## What `windk` Is (And What It Isn't)
 
-## Architecture
+**`windk` is built for everyday Windows users, scripters, and power users** who want to quickly build custom, modular command-line tools on the fly. 
 
-### 1. Entry Proxy Layer (`bin/`)
-Thin, stateless invocation shims exposed on PATH. Each script performs a single unconditional forward of the full argument vector to the router — it sets no variables, performs no branching, and invokes no process other than the router itself.
-```bat
-@echo off
-call "%~dp0..\tools\windk\cli.bat" %*
+If you know your way around `cmd.exe` and want to organize your custom automation scripts into a clean, single-command CLI tool without installing Python or fighting PowerShell's execution policies, `windk` is for you.
+
+* **Target Audience:** Technical hobbyists, local automation scripters, and power users who want a simple, portable CLI kit that "just works."
+* **Not Designed for Enterprise:** `windk` is **not** an enterprise application framework, nor is it intended for heavy corporate production infrastructure. It intentionally favors simplicity, transparency, and rapid script assembly over rigid corporate abstractions or heavy enterprise tooling.
+
+---
+
+## Why Native Batch?
+
+Writing custom command-line utilities in native `cmd.exe` usually turns into a mess of monolithic, hard-to-read batch files with variable collisions and fragile string parsing. `windk` fixes this while preserving the single biggest advantage of Batch: **zero external dependencies**.
+
+* **Zero Setup**: Runs natively on any stock Windows machine straight out of the box.
+* **Instant Cold-Start**: No runtime boot times (unlike Node.js, Python, or heavy PowerShell startup times).
+* **Clean Terminal Scope**: Uses `setlocal`/`endlocal` memory guards in the entry wrapper so custom script variables never pollute your open terminal window.
+* **Native Path Normalization**: Automatically converts relative paths (`..\lib\...`) into clean, absolute Windows file paths.
+
+---
+
+## 1. High-Level Execution Flow
+
+1. **Invocation & Entry Proxy**:
+   * User invokes `windk` from the command line, resolving through the Windows `PATH` environment variable to `bin/windk.bat`.
+   * **`bin/windk.bat`** establishes a `setlocal` boundary, captures raw CLI arguments via `%*`, and delegates execution down to the core engine dispatcher inside `tool/main.bat`.
+2. **Environment & Subsystem Initialization**:
+   * **`tool/main.bat`** receives the proxied call and initializes core framework utilities:
+   * **`path_resolver.bat`** (Path Normalization Engine):
+     * Converts relative paths into absolute Win32 target paths.
+     * Normalizes trailing backslashes and resolves parent directory traversals (`..\`).
+   * **`config_manager.bat`** (INI Parser & State Registry):
+     * Iterates dynamically over `windk.cfg` section headers to register configuration keys into the framework's execution scope.
+     * Evaluates `@:` alias pointers (e.g., `h=@:help`), resolving shortcut keys directly to their primary script target without duplicating target strings.
+     * Uses the path resolver to expand relative script locations into fully qualified paths.
+   * **`colors.bat`** (VT100 Terminal Styling Subsystem):
+     * Generates fast VT100 ANSI escape sequences via internal `cmd.exe` prompt expansion.
+     * Queries Windows version information (`ver` build numbers) to verify native virtual terminal processing support (Windows 10 Build 10586+).
+     * Honors the industry-standard `NO_COLOR` environment variable, safely degrading to plain text when requested or unsupported.
+3. **Argument Parsing & Routing**:
+   * **Flag Intercept**: If a standalone flag (e.g., `-h`, `--help`) is detected before a positional argument, its mapped script (or resolved `@:` alias) executes immediately and terminates the pipeline.
+   * **Subcommand Routing**: If a positional command (e.g., `windk create myapp`) is provided, `main.bat` locates the corresponding script handler, resolves any alias redirects, and forwards remaining flags and arguments down to the target executable batch script.
+4. **Environment Block Cleanup**:
+   * Upon completion, control returns to `bin/windk.bat`, which fires its `endlocal` boundary. This immediately purges all temporary runtime variables and aliases from memory, returning a clean shell state to the caller with the appropriate exit code (`ERRORLEVEL`).
+
+## 2. Configuration Example (`windk.cfg`)
+
+```ini
+[general]
+name=windk
+version=0.1.0
+
+[flag]
+help=..\lib\__help\windk-help.bat
+h=@:help
+
+version=..\lib\__version\windk-version.bat
+v=@:version
+
+[command]
+create=..\lib\commands\create.bat
+c=@:create
+
+delete=..\lib\commands\delete.bat
+d=@:delete
 ```
-
-### 2. Stateless Router (`tools/windk/cli.bat`)
-A lightweight parameter categorization and dispatch gateway. It maintains zero internal state tables and forwards parameter scope directly to target subcommands.
-
-### 3. Atomic Utility Engine (`core/config_manager.bat`)
-Encapsulates configuration I/O into isolated, stateless execution contexts. It performs:
-- Line-buffered JIT key resolution (`GET`)
-- Non-destructive atomic mutations (`SET`)
-
-### 4. Autonomous Subcommands
-Independent executables hosted under `tools/toolname` that own their respective domain business logic and local argument parsing.
-
-## Request Lifecycle
-
-```text
-[ CLI Execution Context: windk <flags|command> [args...] ]
-                           │
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│ STEP 1: Main Script Boundary Initialization            │
-│ - Validate config_manager.bat & windk.cfg paths        │
-│ - Initialize target dispatch tracking variables        │
-└───────────────────────────┬────────────────────────────┘
-                            │
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│ STEP 2: Argument Tokenization & Categorization Loop    │
-│ - Tokenize input stream via SHIFT loop                 │
-│ - Parse token prefixes (-, /, or positional literal)   │
-└─────────────┬────────────────────────────┬─────────────┘
-              │                            │
-      (Flag Token)                (Positional Command)
-              │                            │
-              ▼                            ▼
-┌────────────────────────────┐ ┌────────────────────────────┐
-│ STEP 2A: Flag Dispatch     │ │ STEP 2B: Subcommand Lookup │
-│ - Strip prefix delimiters  │ │ - Issue JIT GET to         │
-│ - Issue JIT GET to         │ │   config_manager.bat       │
-│   config_manager.bat       │ │ - Section: [command]       │
-│ - Section: [flag]          │ │ - Return target path or    │
-│ - Execute flag target or   │ │   append to argument       │
-│   collect passthrough flag │ │   forwarding array         │
-└─────────────┬──────────────┘ └───────────┬────────────────┘
-              │                            │
-              └─────────────┬──────────────┘
-                            │
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│ STEP 3: Config Manager JIT Processing                  │
-│ - Line-by-line stream processing via FOR /F            │
-│ - Recursive @: alias pointer resolution (Max depth: 3) │
-│ - Relative-to-absolute path expansion (.\ or ..\)      │
-│ - Isolated cross-scope handshake via SETVAR            │
-└───────────────────────────┬────────────────────────────┘
-                            │
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│ STEP 4: Target Verification & Subcommand Execution     │
-│ - Assert TARGET_CMD presence on disk                   │
-│ - Pass-through STATELESS_FLAGS and CMD_ARGS            │
-│ - Delegate execution via CALL and pass child exit code │
-└────────────────────────────────────────────────────────┘
-```
-
-## Design Philosophy
-
-- **No bulk config loading** — configuration values are resolved just-in-time, per key, rather than loaded wholesale into the environment block.
-- **Statelessness by default** — the router and config engine hold no persistent internal state, minimizing environment pollution and making behavior predictable across invocations.
-- **Separation of concerns** — routing, configuration I/O, and business logic are owned by distinct components, each independently testable and replaceable.
-- **Isolation of mutation** — configuration writes (`SET`) are atomic and non-destructive, reducing the risk of partial or corrupted config state.
-
-## Project Structure
-
-```text
-exe/
-├── windk.bat                 # Stateless router / dispatch gateway
-├── config/
-│   └── windk.cfg              # Configuration file (sections per flag/command)
-├── help/
-│   └── windk-help.bat          # Main runner help script
-├── util/
-│   └── config_manager.bat      # Atomic JIT config I/O engine (GET / SET)
-└── lib/
-    └── ...                      # Autonomous subcommand executables
-```
-
-## How It Works
-
-1. `windk.bat` tokenizes the incoming CLI arguments and categorizes each token as either a **flag** (`-`/`/` prefixed) or a **positional command**.
-2. For flags, the router issues a JIT `GET` against `config_manager.bat` under the `[flag]` section to resolve the flag's target or behavior.
-3. For positional commands, the router issues a JIT `GET` under the `[command]` section to resolve the subcommand's target path, or appends the token to the argument-forwarding array.
-4. `config_manager.bat` resolves the requested key via line-by-line stream processing, recursively resolving `@:` alias pointers (up to a depth of 3) and expanding relative paths (`.\` or `..\`) to absolute paths.
-5. Once resolved, `windk.bat` verifies the target subcommand exists on disk, then delegates execution via `CALL`, forwarding any stateless flags and command arguments, and propagates the child process's exit code back to the caller.
-
-## Requirements
-
-- Windows Command Shell (`cmd.exe`)
-
-## Usage
-
-```cmd
-windk <flags|command> [args...]
-```
-
-## License
-
-MIT License
-
-Copyright (c) Michael Arakilian and affiliates.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
